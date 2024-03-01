@@ -57,39 +57,57 @@ class _LifeCounterPageState extends State<LifeCounterPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('人生カウンター'),
+          backgroundColor: Colors.purple.shade100,
         ),
-        body: ListView.builder(
-            itemCount: lifeEvents.length,
-            itemBuilder: (context, index) {
-              final lifeEvent = lifeEvents[index];
-              return Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(children: [
-                  Expanded(
-                      child: Text(lifeEvent.title,
-                          style: const TextStyle(fontSize: 16))),
-                  Text(
-                    '${lifeEvent.count}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      lifeEvent.count++;
-                      lifeEventBox?.put(lifeEvent);
-                      fetchLifeEvents();
-                    },
-                    icon: const Icon(Icons.plus_one),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      lifeEventBox?.remove(lifeEvent.id);
-                      fetchLifeEvents();
-                    },
-                    icon: const Icon(Icons.delete),
-                  ),
-                ]),
-              );
-            }),
+        body: lifeEvents.isEmpty
+            ? const Center(
+                child: Text('まだライフイベントはありません。',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              )
+            : ListView.builder(
+                itemCount: lifeEvents.length,
+                itemBuilder: (context, index) {
+                  final lifeEvent = lifeEvents[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Expanded(
+                          child: Text(lifeEvent.title,
+                              style: const TextStyle(fontSize: 16))),
+                      Text(
+                        '${lifeEvent.count}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(width: 16),
+                      IconButton(
+                        onPressed: () {
+                          lifeEvent.count++;
+                          lifeEventBox?.put(lifeEvent);
+                          fetchLifeEvents();
+                        },
+                        icon: const Icon(Icons.plus_one),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (lifeEvent.count > 0) {
+                            lifeEvent.count--;
+                            lifeEventBox?.put(lifeEvent);
+                            fetchLifeEvents();
+                          }
+                        },
+                        icon: const Icon(Icons.exposure_minus_1),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          lifeEventBox?.remove(lifeEvent.id);
+                          fetchLifeEvents();
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ]),
+                  );
+                }),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () async {
@@ -122,12 +140,16 @@ class _AddLifeEventPageState extends State<AddLifeEventPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ライフイベント追加'),
+        backgroundColor: Colors.purple.shade100,
       ),
-      body: TextFormField(
-        onFieldSubmitted: (text) {
-          final lifeEvent = LifeEvent(title: text, count: 0);
-          Navigator.of(context).pop(lifeEvent);
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextFormField(
+          onFieldSubmitted: (text) {
+            final lifeEvent = LifeEvent(title: text, count: 0);
+            Navigator.of(context).pop(lifeEvent);
+          },
+        ),
       ),
     );
   }
