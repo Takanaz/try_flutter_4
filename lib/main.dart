@@ -79,7 +79,14 @@ class _LifeCounterPageState extends State<LifeCounterPage> {
                       fetchLifeEvents();
                     },
                     icon: const Icon(Icons.plus_one),
-                  )
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      lifeEventBox?.remove(lifeEvent.id);
+                      fetchLifeEvents();
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
                 ]),
               );
             }),
